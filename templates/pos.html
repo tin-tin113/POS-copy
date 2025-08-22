@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="pos-container">
+    <div class="product-list">
+        <h2>Products</h2>
+        <div class="products-grid">
+            {% for product in products %}
+                <div class="product-card">
+                    <h3>{{ product.name }}</h3>
+                    <p class="price">${{ "%.2f"|format(product.price) }}</p>
+                    <p class="stock">Stock: {{ product.stock }}</p>
+                    <form action="{{ url_for('add_to_cart') }}" method="post">
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <div class="quantity-control">
+                            <label for="quantity-{{ product.id }}">Qty:</label>
+                            <input type="number" id="quantity-{{ product.id }}" name="quantity" value="1" min="1" max="{{ product.stock }}">
+                        </div>
+                        <button type="submit" class="button add-to-cart">Add to Cart</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+    <div class="cart" style="margin-top: 30px;">
+        <h3>Shopping Cart</h3>
+        {% if cart %}
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>${{ "%.2f"|format(item.price) }}</td>
+                            <td>
+                                <form action="{{ url_for('update_cart_item') }}" method="post" class="update-form">
+                                    <input type="hidden" name="product_id" value="{{ item.id }}">
+                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="quantity-input">
+                                    <button type="submit" class="button small">Update</button>
+                                </form>
+                            </td>
+                            <td>${{ "%.2f"|format(item.price * item.quantity) }}</td>
+                            <td>
+                                <form action="{{ url_for('remove_from_cart') }}" method="post">
+                                    <input type="hidden" name="product_id" value="{{ item.id }}">
+                                    <button type="submit" class="button small danger">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3"><strong>Total</strong></td>
+                        <td colspan="2"><strong>${{ "%.2f"|format(cart|sum(attribute='price') * cart|sum(attribute='quantity')) }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+            
+            <div class="cart-actions">
+                <a href="{{ url_for('clear_cart') }}" class="button danger">Clear Cart</a>
+                <form action="{{ url_for('checkout') }}" method="post">
+                    <button type="submit" class="button primary">Checkout</button>
+                </form>
+            </div>
+        {% else %}
+            <p class="empty-cart">Your cart is empty.</p>
+        {% endif %}
+    </div>
+
+{% endblock %}

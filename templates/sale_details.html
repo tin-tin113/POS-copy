@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="sale-details">
+    <h2>Sale Details</h2>
+    
+    <div class="sale-info">
+        <p><strong>Sale ID:</strong> {{ sale.id }}</p>
+        <p><strong>Date:</strong> {{ sale.date }}</p>
+        <p><strong>Total:</strong> ${{ "%.2f"|format(sale.total) }}</p>
+    </div>
+    
+    <h3>Items Purchased</h3>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>${{ "%.2f"|format(item.price) }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ "%.2f"|format(item.price * item.quantity) }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="actions">
+        <a href="{{ url_for('sales') }}" class="button">Back to Sales</a>
+    </div>
+</section>
+{% endblock %}

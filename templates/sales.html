@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="sales">
+    <h2>Sales History</h2>
+    
+    {% if sales %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Sale ID</th>
+                    <th>Date</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in sales %}
+                    <tr>
+                        <td>{{ sale.id[:8] }}...</td>
+                        <td>{{ sale.date }}</td>
+                        <td>{{ sale.item_count }}</td>
+                        <td>${{ "%.2f"|format(sale.total) }}</td>
+                        <td>
+                            <a href="{{ url_for('sale_details', sale_id=sale.id) }}" class="button small">View Details</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No sales records found.</p>
+    {% endif %}
+</section>
+{% endblock %}+

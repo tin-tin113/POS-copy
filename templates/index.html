@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="welcome">
+    <h2>Welcome to the POS System</h2>
+    <p>A simple point of sale system built with Python, Flask, HTML, and CSS.</p>
+    
+    <div class="actions">
+        <a href="{{ url_for('pos') }}" class="button primary">Start Selling</a>
+        <a href="{{ url_for('products') }}" class="button">Manage Products</a>
+        <a href="{{ url_for('sales') }}" class="button">View Sales</a>
+    </div>
+</section>
+{% endblock %}

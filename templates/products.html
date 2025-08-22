@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="products">
+    <h2>Product Management</h2>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div class="actions">
+        <a href="{{ url_for('add_product') }}" class="button primary">Add New Product</a>
+    </div>
+    
+    {% if products %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>{{ product.id }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>${{ "%.2f"|format(product.price) }}</td>
+                        <td>{{ product.stock }}</td>
+                        <td>
+                            {% if product.stock <= 0 %}
+                                <span class="badge danger">Out of Stock</span>
+                            {% elif product.stock < 5 %}
+                                <span class="badge warning">Low Stock</span>
+                            {% else %}
+                                <span class="badge success">In Stock</span>
+                            {% endif %}
+                        </td>
+                        <td class="action-buttons">
+                            <a href="{{ url_for('edit_product', product_id=product.id) }}" class="button small">Edit</a>
+                            <form method="POST" action="{{ url_for('delete_product', product_id=product.id) }}" class="delete-form">
+                                <button type="submit" class="button small danger" 
+                                        onclick="return confirm('Are you sure you want to delete {{ product.name }}?')">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No products found.</p>
+    {% endif %}
+</section>
+
+<style>
+    .action-buttons {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+    }
+    
+    .delete-form {
+        margin: 0;
+    }
+    
+    .badge {
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 0.8em;
+        font-weight: bold;
+        display: inline-block;
+        text-align: center;
+    }
+    
+    .badge.success {
+        background-color: #28a745;
+        color: white;
+    }
+    
+    .badge.warning {
+        background-color: #ffc107;
+        color: black;
+    }
+    
+    .badge.danger {
+        background-color: #dc3545;
+        color: white;
+    }
+</style>
+{% endblock %}
